@@ -22,6 +22,7 @@ TYPES = ("main",)
 
 SUPPORTED = [
     "cpp",
+    "py",
 ]
 
 logging.basicConfig()
