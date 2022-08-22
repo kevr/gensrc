@@ -18,7 +18,7 @@ import pygit2
 PROG = "gensrc"
 GITHUB = f"https://github.com/kevr/{PROG}"
 
-TYPES = ("main",)
+TYPES = ("main", "header")
 
 SUPPORTED = [
     "cpp",
@@ -94,9 +94,23 @@ def main():
         return error(f"invalid language extension used: {extension}; "
                      f"supported extensions: {', '.join(SUPPORTED)}")
 
+    dirs, filename = [], args.output
+    if "/" in filename:
+        parts = filename.split("/")
+        dirs, filename = parts[:-1], parts[-1]
+
+    if filename.endswith(("hpp", "hxx", "h")):
+        dir_string = "_".join(dirs).upper()
+        if dir_string:
+            dir_string = dir_string + "_"
+        filename = (
+            dir_string + filename.replace(".", "_").upper()
+        )
+
     content = template.render(
         year=datetime.now().year,
-        author=f"{real_name} <{email}>"
+        author=f"{real_name} <{email}>",
+        filename=filename,
     )
 
     with open(output, "w") as f:
